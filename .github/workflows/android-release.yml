@@ -3,6 +3,10 @@ name: android-release
 on:
   workflow_dispatch:
 
+concurrency:
+  group: android-release
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest

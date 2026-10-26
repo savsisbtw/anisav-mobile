@@ -3,6 +3,10 @@ name: ios-unsigned
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ios-unsigned
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: macos-latest
