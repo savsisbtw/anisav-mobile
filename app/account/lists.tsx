@@ -6,13 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import type { CollectionType, Release } from '../../src/lib/types'
 import { api } from '../../src/lib/api'
 import { useAuth } from '../../src/lib/AuthContext'
-import { colors, font, spacing } from '../../src/lib/theme'
+import { colors, font, radius, spacing } from '../../src/lib/theme'
 import AnimeCard from '../../src/components/AnimeCard'
 import Loader from '../../src/components/Loader'
 import Chip from '../../src/components/Chip'
 import Reveal from '../../src/components/Reveal'
 import AnimatedPressable from '../../src/components/AnimatedPressable'
-import AccentGradient from '../../src/components/AccentGradient'
+import Solid from '../../src/components/Solid'
 
 type TabKey = CollectionType | 'FAVORITES'
 
@@ -75,9 +75,9 @@ export default function MyListsScreen() {
         <View style={styles.empty}>
           <Text style={styles.emptyText}>Войдите, чтобы видеть свои списки</Text>
           <AnimatedPressable haptic onPress={() => router.push('/login')}>
-            <AccentGradient style={styles.loginButton}>
+            <Solid style={styles.loginButton}>
               <Text style={styles.loginButtonText}>Войти</Text>
-            </AccentGradient>
+            </Solid>
           </AnimatedPressable>
         </View>
       )}
@@ -109,7 +109,7 @@ export default function MyListsScreen() {
               columnWrapperStyle={styles.row}
               contentContainerStyle={[styles.grid, { paddingBottom: insets.bottom + spacing(6) }]}
               refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.textDim} colors={[colors.accent]} />
               }
               renderItem={({ item, index }) =>
                 item ? (
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.surfaceRaised,
@@ -177,10 +177,10 @@ const styles = StyleSheet.create({
   loginButton: {
     paddingHorizontal: spacing(6),
     paddingVertical: spacing(3),
-    borderRadius: 999,
+    borderRadius: radius.md,
   },
   loginButtonText: {
-    color: '#fff',
+    color: colors.onAccent,
     fontFamily: font.heading,
     fontSize: 14,
   },

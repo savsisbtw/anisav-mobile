@@ -6,7 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { useAuth } from '../src/lib/AuthContext'
 import { colors, font, radius, spacing } from '../src/lib/theme'
 import AnimatedPressable from '../src/components/AnimatedPressable'
-import AccentGradient from '../src/components/AccentGradient'
+import Solid from '../src/components/Solid'
 
 export default function LoginScreen() {
   const insets = useSafeAreaInsets()
@@ -80,9 +80,9 @@ export default function LoginScreen() {
 
         <View style={{ marginTop: spacing(6), opacity: canSubmit ? 1 : 0.4 }}>
           <AnimatedPressable onPress={onSubmit} disabled={!canSubmit} haptic>
-            <AccentGradient style={styles.submitButton}>
+            <Solid style={styles.submitButton}>
               <Text style={styles.submitText}>{submitting ? '...' : 'Войти'}</Text>
-            </AccentGradient>
+            </Solid>
           </AnimatedPressable>
         </View>
       </View>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     width: 36,
     height: 36,
-    borderRadius: radius.full,
+    borderRadius: radius.md,
     backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
@@ -141,20 +141,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   error: {
-    color: colors.accent,
+    color: colors.danger,
     fontFamily: font.body,
     fontSize: 13,
     textAlign: 'center',
     marginTop: spacing(4),
   },
   submitButton: {
-    borderRadius: radius.full,
+    borderRadius: radius.md,
     paddingVertical: spacing(3.5),
     alignItems: 'center',
     justifyContent: 'center',
   },
   submitText: {
-    color: '#fff',
+    color: colors.onAccent,
     fontFamily: font.heading,
     fontSize: 15,
   },

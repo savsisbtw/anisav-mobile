@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { FlatList, Image, RefreshControl, StyleSheet, Text, View } from 'react-native'
+import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { api, imageUrl } from '../../src/lib/api'
+import { api } from '../../src/lib/api'
 import type { Genre } from '../../src/lib/types'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 import Loader from '../../src/components/Loader'
@@ -16,20 +16,13 @@ interface GenreTileProps {
 }
 
 function GenreTile({ genre, index, onPress }: GenreTileProps) {
-  const image = imageUrl(genre.image?.optimized?.preview || genre.image?.preview)
-
   return (
     <Reveal index={index} style={styles.tileWrap}>
-      <AnimatedPressable onPress={onPress} scaleTo={0.97} style={styles.tile}>
-        {image && <Image source={{ uri: image }} style={styles.image} resizeMode="cover" />}
-        <View style={styles.overlay} />
-        <View style={styles.overlayBottom} />
-        <View style={styles.content}>
-          <Text numberOfLines={2} style={styles.name}>
-            {genre.name}
-          </Text>
-          {genre.total_releases != null && <Text style={styles.count}>{genre.total_releases} тайтлов</Text>}
-        </View>
+      <AnimatedPressable onPress={onPress} style={styles.tile}>
+        <Text numberOfLines={2} style={styles.name}>
+          {genre.name}
+        </Text>
+        {genre.total_releases != null && <Text style={styles.count}>{genre.total_releases} тайтлов</Text>}
       </AnimatedPressable>
     </Reveal>
   )
@@ -73,9 +66,14 @@ export default function GenresScreen() {
         { paddingTop: insets.top + spacing(4), paddingBottom: insets.bottom + spacing(24) },
       ]}
       refreshControl={
-        <RefreshControl tintColor={colors.accent} refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl tintColor={colors.textDim} refreshing={refreshing} onRefresh={onRefresh} />
       }
-      ListHeaderComponent={<Text style={styles.title}>Жанры</Text>}
+      ListHeaderComponent={
+        <View style={styles.header}>
+          <Text style={styles.title}>Жанры</Text>
+          <Text style={styles.subtitle}>{genres.length} жанров</Text>
+        </View>
+      }
       renderItem={({ item, index }) => (
         <GenreTile
           genre={item}
@@ -95,12 +93,19 @@ const styles = StyleSheet.create({
   list: {
     paddingHorizontal: spacing(4),
   },
+  header: {
+    marginBottom: spacing(4),
+  },
   title: {
     color: colors.text,
     fontFamily: font.display,
     fontSize: 22,
-    letterSpacing: -0.3,
-    marginBottom: spacing(4),
+  },
+  subtitle: {
+    color: colors.textDim,
+    fontFamily: font.regular,
+    fontSize: 13,
+    marginTop: spacing(1),
   },
   row: {
     justifyContent: 'space-between',
@@ -111,49 +116,21 @@ const styles = StyleSheet.create({
   },
   tile: {
     width: '100%',
-    aspectRatio: 16 / 9,
+    padding: spacing(4),
     borderRadius: radius.lg,
-    overflow: 'hidden',
-    backgroundColor: colors.surfaceRaised,
-  },
-  image: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    opacity: 0.55,
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.25)',
-  },
-  overlayBottom: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '65%',
-    backgroundColor: 'rgba(0,0,0,0.55)',
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    padding: spacing(3),
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
   },
   name: {
     color: colors.text,
-    fontFamily: font.heading,
+    fontFamily: font.medium,
     fontSize: 14,
   },
   count: {
-    color: colors.textFaint,
+    color: colors.textDim,
     fontFamily: font.mono,
-    fontSize: 10,
-    marginTop: spacing(0.5),
+    fontSize: 11,
+    marginTop: spacing(1),
   },
 })

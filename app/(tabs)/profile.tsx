@@ -9,7 +9,7 @@ import Loader from '../../src/components/Loader'
 import Footer from '../../src/components/Footer'
 import Reveal from '../../src/components/Reveal'
 import AnimatedPressable from '../../src/components/AnimatedPressable'
-import AccentGradient from '../../src/components/AccentGradient'
+import Solid from '../../src/components/Solid'
 
 interface ProfileRowProps {
   icon: keyof typeof Ionicons.glyphMap
@@ -20,9 +20,9 @@ interface ProfileRowProps {
 
 function ProfileRow({ icon, label, onPress, danger }: ProfileRowProps) {
   return (
-    <AnimatedPressable onPress={onPress} scaleTo={0.98} style={styles.row}>
+    <AnimatedPressable onPress={onPress} style={styles.row}>
       <View style={styles.rowLeft}>
-        <Ionicons name={icon} size={19} color={danger ? colors.accent : colors.textDim} />
+        <Ionicons name={icon} size={19} color={danger ? colors.danger : colors.textDim} />
         <Text style={[styles.rowLabel, danger && styles.rowLabelDanger]}>{label}</Text>
       </View>
       {!danger && <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />}
@@ -34,9 +34,9 @@ function LoginButton() {
   const router = useRouter()
   return (
     <AnimatedPressable haptic onPress={() => router.push('/login')}>
-      <AccentGradient style={styles.loginButton}>
+      <Solid style={styles.loginButton}>
         <Text style={styles.loginButtonText}>Войти</Text>
-      </AccentGradient>
+      </Solid>
     </AnimatedPressable>
   )
 }
@@ -70,9 +70,9 @@ export default function ProfileScreen() {
           {avatarUri ? (
             <Image source={{ uri: avatarUri }} style={styles.avatar} />
           ) : (
-            <AccentGradient style={styles.avatarFallback}>
+            <Solid style={styles.avatarFallback}>
               <Text style={styles.avatarFallbackText}>{user.nickname?.[0]?.toUpperCase() ?? '?'}</Text>
-            </AccentGradient>
+            </Solid>
           )}
           <Text style={styles.nickname}>{user.nickname}</Text>
         </Reveal>
@@ -121,8 +121,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.text,
     fontFamily: font.display,
-    fontSize: 26,
-    letterSpacing: -0.4,
+    fontSize: 22,
     paddingHorizontal: spacing(4),
     marginTop: spacing(2),
     marginBottom: spacing(4),
@@ -135,18 +134,18 @@ const styles = StyleSheet.create({
   avatar: {
     width: 84,
     height: 84,
-    borderRadius: radius.full,
+    borderRadius: radius.round,
     backgroundColor: colors.surfaceRaised,
   },
   avatarFallback: {
     width: 84,
     height: 84,
-    borderRadius: radius.full,
+    borderRadius: radius.round,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarFallbackText: {
-    color: '#fff',
+    color: colors.onAccent,
     fontFamily: font.display,
     fontSize: 32,
   },
@@ -164,7 +163,7 @@ const styles = StyleSheet.create({
   loggedOutIconCircle: {
     width: 68,
     height: 68,
-    borderRadius: radius.full,
+    borderRadius: radius.round,
     backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
@@ -185,12 +184,12 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   loginButton: {
-    borderRadius: radius.full,
+    borderRadius: radius.md,
     paddingHorizontal: spacing(8),
     paddingVertical: spacing(3),
   },
   loginButtonText: {
-    color: '#fff',
+    color: colors.onAccent,
     fontFamily: font.heading,
     fontSize: 15,
   },
@@ -223,6 +222,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   rowLabelDanger: {
-    color: colors.accent,
+    color: colors.danger,
   },
 })

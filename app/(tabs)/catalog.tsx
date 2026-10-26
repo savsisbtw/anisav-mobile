@@ -21,7 +21,7 @@ import AnimeCard from '../../src/components/AnimeCard'
 import Chip from '../../src/components/Chip'
 import Reveal from '../../src/components/Reveal'
 import AnimatedPressable from '../../src/components/AnimatedPressable'
-import AccentGradient from '../../src/components/AccentGradient'
+import Solid from '../../src/components/Solid'
 import { GridSkeleton } from '../../src/components/Skeleton'
 
 type SortOpt = ValueDescription & { label: string }
@@ -337,9 +337,9 @@ export default function CatalogScreen() {
               </Pressable>
               <View style={{ flex: 1 }}>
                 <AnimatedPressable haptic onPress={applyFilters}>
-                  <AccentGradient style={styles.applyButton}>
+                  <Solid style={styles.applyButton}>
                     <Text style={styles.applyButtonText}>Применить</Text>
-                  </AccentGradient>
+                  </Solid>
                 </AnimatedPressable>
               </View>
             </View>
@@ -367,8 +367,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: colors.text,
     fontFamily: font.display,
-    fontSize: 24,
-    letterSpacing: -0.4,
+    fontSize: 22,
     paddingHorizontal: spacing(4),
     paddingTop: spacing(3),
   },
@@ -385,8 +384,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing(2),
-    backgroundColor: colors.surfaceRaised,
-    borderRadius: radius.full,
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     paddingHorizontal: spacing(3),
     height: 40,
   },
@@ -401,8 +402,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing(1),
-    backgroundColor: colors.surfaceRaised,
-    borderRadius: radius.full,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
+    borderRadius: radius.md,
     paddingHorizontal: spacing(3),
     height: 40,
   },
@@ -413,7 +415,7 @@ const styles = StyleSheet.create({
   },
   filterBadge: {
     backgroundColor: colors.accent,
-    borderRadius: radius.full,
+    borderRadius: radius.round,
     minWidth: 18,
     height: 18,
     paddingHorizontal: spacing(1),
@@ -421,7 +423,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   filterBadgeText: {
-    color: colors.text,
+    color: colors.onAccent,
     fontFamily: font.mono,
     fontSize: 10,
   },
@@ -467,7 +469,7 @@ const styles = StyleSheet.create({
   sheetHandle: {
     width: 36,
     height: 4,
-    borderRadius: radius.full,
+    borderRadius: radius.round,
     backgroundColor: colors.border,
     alignSelf: 'center',
     marginTop: spacing(2),
@@ -490,11 +492,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing(4),
   },
   filterSectionTitle: {
-    color: colors.textFaint,
-    fontFamily: font.mono,
-    fontSize: 11,
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
+    color: colors.textDim,
+    fontFamily: font.body,
+    fontSize: 11.5,
     marginBottom: spacing(2),
   },
   chipsWrap: {
@@ -529,7 +529,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
   },
   applyButtonText: {
-    color: '#fff',
+    color: colors.onAccent,
     fontFamily: font.heading,
     fontSize: 14,
   },

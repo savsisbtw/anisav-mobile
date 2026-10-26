@@ -5,7 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import type { Release } from '../src/lib/types'
 import { getWishlist, onWishlistChange } from '../src/lib/wishlist'
-import { colors, font, spacing } from '../src/lib/theme'
+import { colors, font, radius, spacing } from '../src/lib/theme'
 import AnimeCard from '../src/components/AnimeCard'
 import Loader from '../src/components/Loader'
 import Reveal from '../src/components/Reveal'
@@ -70,7 +70,7 @@ export default function WishlistScreen() {
           columnWrapperStyle={styles.row}
           contentContainerStyle={[styles.grid, { paddingBottom: insets.bottom + spacing(6) }]}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.textDim} colors={[colors.accent]} />
           }
           renderItem={({ item, index }) =>
             item ? (
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.surfaceRaised,

@@ -6,7 +6,6 @@ import { imageUrl } from '../lib/api'
 import { colors, font, radius, spacing } from '../lib/theme'
 import { isInWishlist, onWishlistChange, toggleWishlist } from '../lib/wishlist'
 import AnimatedPressable from './AnimatedPressable'
-import AccentGradient from './AccentGradient'
 
 interface AnimeCardProps {
   release: Release
@@ -34,31 +33,25 @@ export default function AnimeCard({ release, onPress }: AnimeCardProps) {
   }
 
   const poster = imageUrl(release.poster?.optimized?.preview || release.poster?.preview)
+  const meta = [
+    release.year,
+    release.type?.description,
+    release.episodes_total != null ? `${release.episodes_total} эп.` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
   return (
     <AnimatedPressable onPress={onPress} style={styles.container}>
       <View style={styles.posterWrap}>
         {poster && <Image source={{ uri: poster }} style={styles.poster} resizeMode="cover" />}
 
-        <View style={styles.topLeftCol}>
-          {release.is_ongoing && (
-            <AccentGradient style={styles.badge}>
-              <Text style={styles.badgeText}>ONGOING</Text>
-            </AccentGradient>
-          )}
-          {release.episodes_total != null && (
-            <View style={[styles.badge, styles.badgeMuted]}>
-              <Text style={styles.badgeText}>{release.episodes_total} эп.</Text>
-            </View>
-          )}
-        </View>
-
         <View style={styles.starButtonWrap}>
-          <AnimatedPressable hitSlop={10} onPress={handleToggleWishlist} scaleTo={0.8} haptic style={styles.starButton}>
+          <AnimatedPressable hitSlop={10} onPress={handleToggleWishlist} haptic style={[styles.starButton, saved && styles.starButtonOn]}>
             <Ionicons
               name={saved ? 'star' : 'star-outline'}
-              size={14}
-              color={saved ? colors.accent2 : colors.text}
+              size={13}
+              color={saved ? colors.onAccent : colors.text}
             />
           </AnimatedPressable>
         </View>
@@ -67,9 +60,12 @@ export default function AnimeCard({ release, onPress }: AnimeCardProps) {
       <Text numberOfLines={2} style={styles.title}>
         {release.name.main}
       </Text>
-      <Text numberOfLines={1} style={styles.meta}>
-        {release.season?.description} {release.year} · {release.type?.description}
-      </Text>
+      <View style={styles.metaRow}>
+        {release.is_ongoing && <View style={styles.dot} />}
+        <Text numberOfLines={1} style={styles.meta}>
+          {meta}
+        </Text>
+      </View>
     </AnimatedPressable>
   )
 }
@@ -84,32 +80,12 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     overflow: 'hidden',
     backgroundColor: colors.surfaceRaised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
   },
   poster: {
     width: '100%',
     height: '100%',
-  },
-  topLeftCol: {
-    position: 'absolute',
-    top: spacing(1.5),
-    left: spacing(1.5),
-    gap: spacing(1),
-  },
-  badge: {
-    paddingHorizontal: spacing(1.5),
-    paddingVertical: spacing(0.75),
-    borderRadius: radius.sm,
-    alignSelf: 'flex-start',
-  },
-  badgeMuted: {
-    backgroundColor: colors.overlay,
-  },
-  badgeText: {
-    color: colors.text,
-    fontFamily: font.mono,
-    fontSize: 8.5,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
   },
   starButtonWrap: {
     position: 'absolute',
@@ -119,10 +95,16 @@ const styles = StyleSheet.create({
   starButton: {
     width: 26,
     height: 26,
-    borderRadius: radius.full,
+    borderRadius: radius.sm,
     backgroundColor: colors.overlay,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  starButtonOn: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
   },
   title: {
     marginTop: spacing(2),
@@ -131,9 +113,21 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 16,
   },
-  meta: {
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing(1.5),
     marginTop: spacing(1),
-    color: colors.textFaint,
+  },
+  dot: {
+    width: 5,
+    height: 5,
+    borderRadius: radius.round,
+    backgroundColor: colors.text,
+  },
+  meta: {
+    flexShrink: 1,
+    color: colors.textDim,
     fontFamily: font.regular,
     fontSize: 11,
   },

@@ -30,10 +30,6 @@ function Pulse({ style }: { style?: StyleProp<ViewStyle> }) {
   return <Animated.View style={[styles.block, animatedStyle, style]} />
 }
 
-export function HeroSkeleton() {
-  return <Pulse style={styles.hero} />
-}
-
 export function PosterRowSkeleton({ count = 4 }: { count?: number }) {
   return (
     <View style={styles.row}>
@@ -58,8 +54,7 @@ export function HomeSkeleton() {
   const insets = useSafeAreaInsets()
   return (
     <View style={{ paddingTop: insets.top, flex: 1, backgroundColor: colors.background }}>
-      <HeroSkeleton />
-      <View style={{ marginTop: spacing(5) }}>
+      <View style={{ marginTop: spacing(4) }}>
         <PosterRowSkeleton count={4} />
       </View>
       <View style={{ marginTop: spacing(5) }}>
@@ -73,12 +68,6 @@ const styles = StyleSheet.create({
   block: {
     backgroundColor: colors.surfaceRaised,
     borderRadius: radius.md,
-  },
-  hero: {
-    width: '100%',
-    aspectRatio: 3 / 4,
-    maxHeight: 420,
-    borderRadius: 0,
   },
   row: {
     flexDirection: 'row',

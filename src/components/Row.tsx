@@ -38,9 +38,8 @@ const styles = StyleSheet.create({
   heading: {
     color: colors.text,
     fontFamily: font.heading,
-    fontSize: 17,
-    letterSpacing: -0.2,
-    marginBottom: spacing(2),
+    fontSize: 14,
+    marginBottom: spacing(3),
     paddingHorizontal: spacing(4),
   },
   list: {

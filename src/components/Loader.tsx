@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { colors, font, spacing } from '../lib/theme'
 
 interface LoaderProps {
@@ -8,8 +8,7 @@ interface LoaderProps {
 export default function Loader({ label }: LoaderProps) {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color={colors.accent} />
-      {label && <Text style={styles.label}>{label}</Text>}
+      <Text style={styles.label}>{label || 'Загрузка...'}</Text>
     </View>
   )
 }
@@ -20,11 +19,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: spacing(24),
-    gap: spacing(3),
   },
   label: {
     color: colors.textDim,
-    fontFamily: font.body,
+    fontFamily: font.mono,
     fontSize: 13,
   },
 })

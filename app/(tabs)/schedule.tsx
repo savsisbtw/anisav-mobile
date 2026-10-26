@@ -50,7 +50,7 @@ export default function ScheduleScreen() {
         paddingBottom: insets.bottom + spacing(24),
       }}
       refreshControl={
-        <RefreshControl tintColor={colors.accent} refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl tintColor={colors.textDim} refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
       <Text style={styles.title}>Расписание выхода серий</Text>

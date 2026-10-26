@@ -1,53 +1,25 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Image, RefreshControl, StyleSheet, Text, View } from 'react-native'
+import { Image, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import Animated, {
-  interpolate,
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  Extrapolation,
-} from 'react-native-reanimated'
 import { api, imageUrl } from '../../src/lib/api'
 import { getContinueWatching, ContinueWatchingItem } from '../../src/lib/continueWatching'
 import type { Release, ScheduleDay } from '../../src/lib/types'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
-import { useReduceMotion } from '../../src/lib/useReduceMotion'
 import Row from '../../src/components/Row'
 import Footer from '../../src/components/Footer'
 import { HomeSkeleton } from '../../src/components/Skeleton'
 import Reveal from '../../src/components/Reveal'
 import AnimatedPressable from '../../src/components/AnimatedPressable'
-import AccentGradient from '../../src/components/AccentGradient'
-
-const HERO_HEIGHT = 460
 
 export default function HomeScreen() {
   const router = useRouter()
   const insets = useSafeAreaInsets()
-  const reduced = useReduceMotion()
   const [latest, setLatest] = useState<Release[] | null>(null)
   const [recommended, setRecommended] = useState<Release[]>([])
   const [today, setToday] = useState<ScheduleDay[]>([])
   const [continueWatching, setContinueWatching] = useState<ContinueWatchingItem[]>([])
   const [refreshing, setRefreshing] = useState(false)
-  const scrollY = useSharedValue(0)
-
-  const scrollHandler = useAnimatedScrollHandler((e) => {
-    scrollY.value = e.contentOffset.y
-  })
-
-  const heroStyle = useAnimatedStyle(() => {
-    if (reduced) return {}
-    const y = scrollY.value
-    return {
-      transform: [
-        { translateY: interpolate(y, [-120, 0, 120], [-40, 0, 34], Extrapolation.CLAMP) },
-        { scale: interpolate(y, [-120, 0], [1.15, 1], Extrapolation.CLAMP) },
-      ],
-    }
-  })
 
   const load = useCallback(async () => {
     const [latestRes, recommendedRes, scheduleRes, continueRes] = await Promise.all([
@@ -74,52 +46,22 @@ export default function HomeScreen() {
 
   if (!latest) return <HomeSkeleton />
 
-  const hero = latest[0]
-
   return (
-    <Animated.ScrollView
+    <ScrollView
       style={styles.container}
-      contentContainerStyle={{ paddingBottom: insets.bottom + spacing(24) }}
+      contentContainerStyle={{
+        paddingTop: insets.top + spacing(4),
+        paddingBottom: insets.bottom + spacing(24),
+      }}
       showsVerticalScrollIndicator={false}
-      onScroll={scrollHandler}
-      scrollEventThrottle={16}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.textDim} />
       }
     >
-      {hero && (
-        <View style={styles.hero}>
-          <Animated.Image
-            source={{ uri: imageUrl(hero.poster?.optimized?.preview || hero.poster?.preview) }}
-            style={[styles.heroImage, heroStyle]}
-            resizeMode="cover"
-          />
-          <View style={styles.heroOverlay} />
-          <View style={styles.heroOverlayBottom} />
-
-          <View style={[styles.heroContent, { paddingTop: insets.top + spacing(4) }]}>
-            <View style={{ flex: 1 }} />
-            <AccentGradient style={styles.heroBadge}>
-              <Text style={styles.heroBadgeText}>Новинка</Text>
-            </AccentGradient>
-            <Text style={styles.heroTitle} numberOfLines={2}>
-              {hero.name.main}
-            </Text>
-            {!!hero.description && (
-              <Text style={styles.heroDescription} numberOfLines={2}>
-                {hero.description}
-              </Text>
-            )}
-            <View style={{ alignSelf: 'flex-start', marginTop: spacing(4) }}>
-              <AnimatedPressable haptic onPress={() => router.push(`/title/${hero.alias || hero.id}`)}>
-                <AccentGradient style={styles.heroButton}>
-                  <Text style={styles.heroButtonText}>Смотреть</Text>
-                </AccentGradient>
-              </AnimatedPressable>
-            </View>
-          </View>
-        </View>
-      )}
+      <View style={styles.header}>
+        <Text style={styles.title}>Главная</Text>
+        <Text style={styles.subtitle}>Свежие релизы и то, что ты смотришь</Text>
+      </View>
 
       {continueWatching.length > 0 && (
         <View style={styles.section}>
@@ -137,19 +79,17 @@ export default function HomeScreen() {
                     style={styles.continueImage}
                     resizeMode="cover"
                   />
-                  <View style={styles.continueOverlay}>
-                    <Text style={styles.continueEpisode}>СЕРИЯ {item.episode.ordinal}</Text>
-                    {!!item.episode.duration && (
-                      <View style={styles.continueBarTrack}>
-                        <AccentGradient
-                          style={[
-                            styles.continueBarFill,
-                            { width: `${Math.min(100, (item.time / item.episode.duration) * 100)}%` },
-                          ]}
-                        />
-                      </View>
-                    )}
-                  </View>
+                  {!!item.episode.duration && (
+                    <View style={styles.continueBarTrack}>
+                      <View
+                        style={[
+                          styles.continueBarFill,
+                          { width: `${Math.min(100, (item.time / item.episode.duration) * 100)}%` },
+                        ]}
+                      />
+                    </View>
+                  )}
+                  <Text style={styles.continueEpisode}>Серия {item.episode.ordinal}</Text>
                 </AnimatedPressable>
               </Reveal>
             ))}
@@ -162,7 +102,7 @@ export default function HomeScreen() {
       <Row title="Рекомендуем" releases={recommended} />
 
       <Footer />
-    </Animated.ScrollView>
+    </ScrollView>
   )
 }
 
@@ -171,14 +111,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  header: {
+    paddingHorizontal: spacing(4),
+  },
+  title: {
+    color: colors.text,
+    fontFamily: font.display,
+    fontSize: 22,
+  },
+  subtitle: {
+    color: colors.textDim,
+    fontFamily: font.regular,
+    fontSize: 13,
+    marginTop: spacing(1),
+  },
   section: {
-    marginTop: spacing(5),
+    marginTop: spacing(6),
   },
   sectionTitle: {
     color: colors.text,
     fontFamily: font.heading,
-    fontSize: 17,
-    letterSpacing: -0.2,
+    fontSize: 14,
     marginBottom: spacing(3),
     paddingHorizontal: spacing(4),
   },
@@ -196,106 +149,23 @@ const styles = StyleSheet.create({
     height: 165,
     borderRadius: radius.md,
     backgroundColor: colors.surfaceCard,
-  },
-  continueOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    padding: spacing(2),
-  },
-  continueEpisode: {
-    color: colors.text,
-    fontFamily: font.mono,
-    fontSize: 9,
-    letterSpacing: 0.4,
-    marginBottom: spacing(1),
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
   },
   continueBarTrack: {
-    height: 3,
-    borderRadius: 2,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    height: 2,
+    marginTop: spacing(2),
+    backgroundColor: colors.borderStrong,
     overflow: 'hidden',
   },
   continueBarFill: {
     height: '100%',
+    backgroundColor: colors.text,
   },
-  hero: {
-    width: '100%',
-    height: HERO_HEIGHT,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
-  },
-  heroImage: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100%',
-    height: '100%',
-  },
-  heroOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(10,10,19,0.3)',
-  },
-  heroOverlayBottom: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '65%',
-    backgroundColor: colors.background,
-    opacity: 0.88,
-  },
-  heroContent: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0,
-    padding: spacing(4),
-  },
-  heroBadge: {
-    paddingHorizontal: spacing(2),
-    paddingVertical: spacing(1),
-    borderRadius: radius.sm,
-    alignSelf: 'flex-start',
-    marginBottom: spacing(2),
-  },
-  heroBadgeText: {
-    color: '#fff',
-    fontFamily: font.mono,
-    fontSize: 10,
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
-  },
-  heroTitle: {
-    color: colors.text,
-    fontFamily: font.display,
-    fontSize: 26,
-    letterSpacing: -0.4,
-    lineHeight: 30,
-  },
-  heroDescription: {
-    marginTop: spacing(2),
+  continueEpisode: {
     color: colors.textDim,
     fontFamily: font.regular,
-    fontSize: 14,
-    lineHeight: 19,
-  },
-  heroButton: {
-    paddingHorizontal: spacing(6),
-    paddingVertical: spacing(3),
-    borderRadius: radius.full,
-  },
-  heroButtonText: {
-    color: '#fff',
-    fontFamily: font.heading,
-    fontSize: 15,
+    fontSize: 11,
+    marginTop: spacing(1.5),
   },
 })

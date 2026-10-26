@@ -10,7 +10,7 @@ import { colors, font, radius, spacing } from '../../src/lib/theme'
 import Loader from '../../src/components/Loader'
 import Reveal from '../../src/components/Reveal'
 import AnimatedPressable from '../../src/components/AnimatedPressable'
-import AccentGradient from '../../src/components/AccentGradient'
+import Solid from '../../src/components/Solid'
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString('ru-RU', {
@@ -61,9 +61,9 @@ export default function HistoryScreen() {
         <View style={styles.empty}>
           <Text style={styles.emptyText}>Войдите, чтобы видеть историю просмотра</Text>
           <AnimatedPressable haptic onPress={() => router.push('/login')}>
-            <AccentGradient style={styles.loginButton}>
+            <Solid style={styles.loginButton}>
               <Text style={styles.loginButtonText}>Войти</Text>
-            </AccentGradient>
+            </Solid>
           </AnimatedPressable>
         </View>
       )}
@@ -82,7 +82,7 @@ export default function HistoryScreen() {
           keyExtractor={(item) => String(item.id)}
           contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + spacing(6) }]}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.textDim} colors={[colors.accent]} />
           }
           renderItem={({ item, index }) => {
             const thumb = imageUrl(item.release.poster?.optimized?.thumbnail || item.release.poster?.thumbnail)
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.surfaceRaised,
@@ -164,10 +164,10 @@ const styles = StyleSheet.create({
   loginButton: {
     paddingHorizontal: spacing(6),
     paddingVertical: spacing(3),
-    borderRadius: 999,
+    borderRadius: radius.md,
   },
   loginButtonText: {
-    color: '#fff',
+    color: colors.onAccent,
     fontFamily: font.heading,
     fontSize: 14,
   },

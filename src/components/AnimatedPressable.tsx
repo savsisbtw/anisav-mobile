@@ -1,47 +1,46 @@
 import { ReactNode, useCallback } from 'react'
 import { GestureResponderEvent, Pressable, PressableProps, StyleProp, ViewStyle } from 'react-native'
-import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
+import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import * as Haptics from 'expo-haptics'
 
 interface AnimatedPressableProps extends Omit<PressableProps, 'style'> {
   children: ReactNode
   style?: StyleProp<ViewStyle>
-  scaleTo?: number
   haptic?: boolean
 }
 
-const SPRING = { damping: 16, stiffness: 260, reduceMotion: ReduceMotion.System }
+const PRESSED_OPACITY = 0.55
+const TIMING = { duration: 90, reduceMotion: ReduceMotion.System }
 
 export default function AnimatedPressable({
   children,
   style,
-  scaleTo = 0.96,
   haptic = false,
   onPressIn,
   onPressOut,
   onPress,
   ...rest
 }: AnimatedPressableProps) {
-  const scale = useSharedValue(1)
+  const opacity = useSharedValue(1)
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
   }))
 
   const handlePressIn = useCallback(
     (e: GestureResponderEvent) => {
-      scale.value = withSpring(scaleTo, SPRING)
+      opacity.value = withTiming(PRESSED_OPACITY, TIMING)
       onPressIn?.(e)
     },
-    [onPressIn, scale, scaleTo]
+    [onPressIn, opacity]
   )
 
   const handlePressOut = useCallback(
     (e: GestureResponderEvent) => {
-      scale.value = withSpring(1, SPRING)
+      opacity.value = withTiming(1, TIMING)
       onPressOut?.(e)
     },
-    [onPressOut, scale]
+    [onPressOut, opacity]
   )
 
   const handlePress = useCallback(

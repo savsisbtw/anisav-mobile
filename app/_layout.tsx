@@ -8,11 +8,13 @@ import {
   Inter_400Regular,
   Inter_500Medium,
   Inter_600SemiBold,
-  Inter_700Bold,
-  Inter_800ExtraBold,
   useFonts as useInterFonts,
 } from '@expo-google-fonts/inter'
-import { SpaceMono_400Regular, SpaceMono_700Bold, useFonts as useSpaceMonoFonts } from '@expo-google-fonts/space-mono'
+import {
+  JetBrainsMono_400Regular,
+  JetBrainsMono_500Medium,
+  useFonts as useMonoFonts,
+} from '@expo-google-fonts/jetbrains-mono'
 import { AuthProvider } from '../src/lib/AuthContext'
 import { loadGateway } from '../src/lib/gateway'
 import { colors } from '../src/lib/theme'
@@ -24,10 +26,8 @@ export default function RootLayout() {
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
-    Inter_700Bold,
-    Inter_800ExtraBold,
   })
-  const [monoLoaded] = useSpaceMonoFonts({ SpaceMono_400Regular, SpaceMono_700Bold })
+  const [monoLoaded] = useMonoFonts({ JetBrainsMono_400Regular, JetBrainsMono_500Medium })
   const [gatewayReady, setGatewayReady] = useState(false)
   const fontsReady = interLoaded && monoLoaded && gatewayReady
 

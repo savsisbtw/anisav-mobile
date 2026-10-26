@@ -2,12 +2,12 @@
   "expo": {
     "name": "AniSav",
     "slug": "anisav-mobile",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "anisav",
     "userInterfaceStyle": "dark",
-    "backgroundColor": "#121212",
+    "backgroundColor": "#000000",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "xyz.savsis.anisav"
@@ -15,7 +15,7 @@
     "android": {
       "package": "xyz.savsis.anisav",
       "adaptiveIcon": {
-        "backgroundColor": "#121212",
+        "backgroundColor": "#000000",
         "foregroundImage": "./assets/adaptive-icon-foreground.png",
         "backgroundImage": "./assets/adaptive-icon-background.png"
       },
@@ -35,7 +35,7 @@
         {
           "image": "./assets/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#121212"
+          "backgroundColor": "#000000"
         }
       ],
       "expo-video",

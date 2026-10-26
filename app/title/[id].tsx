@@ -23,7 +23,7 @@ import Chip from '../../src/components/Chip'
 import Player from '../../src/components/Player'
 import Reveal from '../../src/components/Reveal'
 import AnimatedPressable from '../../src/components/AnimatedPressable'
-import AccentGradient from '../../src/components/AccentGradient'
+import Solid from '../../src/components/Solid'
 
 const COLLECTION_LABELS: Record<CollectionType, string> = {
   WATCHING: 'Смотрю',
@@ -239,12 +239,12 @@ export default function TitleDetailScreen() {
               <AnimatedPressable haptic onPress={() => setListOpen(true)} disabled={busy}>
                 {collectionType ? (
                   <View style={[styles.listButton, styles.listButtonActive]}>
-                    <Text style={styles.listButtonText}>{COLLECTION_LABELS[collectionType]}</Text>
+                    <Text style={[styles.listButtonText, styles.listButtonTextActive]}>{COLLECTION_LABELS[collectionType]}</Text>
                   </View>
                 ) : (
-                  <AccentGradient style={styles.listButton}>
+                  <Solid style={styles.listButton}>
                     <Text style={styles.listButtonText}>+ В список</Text>
-                  </AccentGradient>
+                  </Solid>
                 )}
               </AnimatedPressable>
             )}
@@ -304,13 +304,13 @@ export default function TitleDetailScreen() {
                 <Reveal key={ep.id} index={i % 12}>
                   <AnimatedPressable
                     onPress={() => setSelectedEp(ep)}
-                    scaleTo={0.97}
+                   
                     style={isSelected ? undefined : styles.episodeButton}
                   >
                     {isSelected ? (
-                      <AccentGradient style={styles.episodeButton}>
+                      <Solid style={styles.episodeButton}>
                         <EpisodeContent ep={ep} tc={tc} selected />
-                      </AccentGradient>
+                      </Solid>
                     ) : (
                       <EpisodeContent ep={ep} tc={tc} />
                     )}
@@ -336,9 +336,9 @@ export default function TitleDetailScreen() {
                 </Text>
               </View>
               <Pressable onPress={() => Linking.openURL(t.magnet)}>
-                <AccentGradient style={styles.magnetButton}>
+                <Solid style={styles.magnetButton}>
                   <Text style={styles.magnetButtonText}>Magnet</Text>
-                </AccentGradient>
+                </Solid>
               </Pressable>
             </View>
           ))}
@@ -375,14 +375,14 @@ function EpisodeContent({ ep, tc, selected }: { ep: Episode; tc?: TimecodeItem; 
     <>
       <View style={styles.episodeRow}>
         <Text style={[styles.episodeLabel, selected && styles.episodeLabelActive]}>Серия {ep.ordinal}</Text>
-        {tc?.is_watched && <Text style={styles.episodeCheck}>✓</Text>}
+        {tc?.is_watched && <Text style={[styles.episodeCheck, selected && styles.episodeLabelActive]}>✓</Text>}
       </View>
       {ep.name && (
         <Text numberOfLines={1} style={[styles.episodeName, selected && styles.episodeNameActive]}>
           {ep.name}
         </Text>
       )}
-      {tc && !tc.is_watched && ep.duration ? (
+      {tc && !tc.is_watched && ep.duration && !selected ? (
         <View style={styles.progressTrack}>
           <View style={[styles.progressFill, { width: `${Math.min(100, (tc.time / ep.duration) * 100)}%` }]} />
         </View>
@@ -418,6 +418,8 @@ const styles = StyleSheet.create({
     aspectRatio: 2 / 3,
     borderRadius: radius.md,
     backgroundColor: colors.surfaceRaised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
   },
   headerInfo: {
     flex: 1,
@@ -427,7 +429,6 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontFamily: font.display,
     fontSize: 20,
-    letterSpacing: -0.3,
   },
   englishTitle: {
     color: colors.textFaint,
@@ -450,20 +451,25 @@ const styles = StyleSheet.create({
   listButton: {
     paddingHorizontal: spacing(3),
     paddingVertical: spacing(1.5),
-    borderRadius: radius.full,
+    borderRadius: radius.md,
   },
   listButtonActive: {
-    backgroundColor: colors.surfaceRaised,
+    backgroundColor: 'transparent',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
   },
   listButtonText: {
-    color: colors.text,
+    color: colors.onAccent,
     fontFamily: font.heading,
     fontSize: 12,
+  },
+  listButtonTextActive: {
+    color: colors.text,
   },
   iconButton: {
     width: 32,
     height: 32,
-    borderRadius: radius.full,
+    borderRadius: radius.md,
     backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
@@ -493,9 +499,8 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.text,
     fontFamily: font.heading,
-    fontSize: 17,
-    letterSpacing: -0.2,
-    marginBottom: spacing(2),
+    fontSize: 14,
+    marginBottom: spacing(3),
     paddingHorizontal: spacing(4),
   },
   episodeList: {
@@ -504,7 +509,8 @@ const styles = StyleSheet.create({
   },
   episodeButton: {
     width: 130,
-    backgroundColor: colors.surfaceRaised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderStrong,
     borderRadius: radius.md,
     padding: spacing(3),
   },
@@ -519,7 +525,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   episodeLabelActive: {
-    color: '#fff',
+    color: colors.onAccent,
   },
   episodeCheck: {
     color: colors.text,
@@ -533,18 +539,18 @@ const styles = StyleSheet.create({
     marginTop: spacing(1),
   },
   episodeNameActive: {
-    color: 'rgba(255,255,255,0.82)',
+    color: 'rgba(0,0,0,0.6)',
   },
   progressTrack: {
-    height: 3,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: radius.full,
+    height: 2,
+    backgroundColor: colors.borderStrong,
+    borderRadius: radius.round,
     marginTop: spacing(2),
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: 'rgba(255,255,255,0.7)',
+    backgroundColor: colors.text,
   },
   torrentRow: {
     flexDirection: 'row',
@@ -576,10 +582,10 @@ const styles = StyleSheet.create({
   magnetButton: {
     paddingHorizontal: spacing(3),
     paddingVertical: spacing(1.5),
-    borderRadius: radius.full,
+    borderRadius: radius.md,
   },
   magnetButtonText: {
-    color: '#fff',
+    color: colors.onAccent,
     fontFamily: font.heading,
     fontSize: 11,
   },
@@ -610,7 +616,7 @@ const styles = StyleSheet.create({
     fontFamily: font.heading,
   },
   actionSheetRemove: {
-    color: '#ff6b6b',
+    color: colors.danger,
     fontFamily: font.body,
     fontSize: 15,
   },
