@@ -13,18 +13,16 @@ import type {
   ValueDescription,
 } from './types'
 import { getToken } from './auth'
-
-const GATEWAY = 'https://api.savsis.xyz/api/anilibria'
-const API_BASE = `${GATEWAY}/api/v1`
+import { activeGateway, fetchWithFailover } from './gateway'
 
 export function imageUrl(path?: string | null): string | undefined {
   if (!path) return undefined
   if (path.startsWith('http')) return path
-  return `${GATEWAY}${path}`
+  return `${activeGateway()}${path}`
 }
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, init)
+  const res = await fetchWithFailover(path, init)
   const data = await res.json().catch(() => null)
   if (!res.ok) throw new Error(data?.error || `AniLiberty API ${res.status}: ${path}`)
   return data as T

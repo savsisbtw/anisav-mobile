@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
@@ -14,6 +14,7 @@ import {
 } from '@expo-google-fonts/inter'
 import { SpaceMono_400Regular, SpaceMono_700Bold, useFonts as useSpaceMonoFonts } from '@expo-google-fonts/space-mono'
 import { AuthProvider } from '../src/lib/AuthContext'
+import { loadGateway } from '../src/lib/gateway'
 import { colors } from '../src/lib/theme'
 
 SplashScreen.preventAutoHideAsync().catch(() => {})
@@ -27,7 +28,12 @@ export default function RootLayout() {
     Inter_800ExtraBold,
   })
   const [monoLoaded] = useSpaceMonoFonts({ SpaceMono_400Regular, SpaceMono_700Bold })
-  const fontsReady = interLoaded && monoLoaded
+  const [gatewayReady, setGatewayReady] = useState(false)
+  const fontsReady = interLoaded && monoLoaded && gatewayReady
+
+  useEffect(() => {
+    loadGateway().then(() => setGatewayReady(true))
+  }, [])
 
   useEffect(() => {
     if (fontsReady) SplashScreen.hideAsync().catch(() => {})
