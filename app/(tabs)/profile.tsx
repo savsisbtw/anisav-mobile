@@ -94,6 +94,7 @@ export default function ProfileScreen() {
 
       <View style={styles.section}>
         <ProfileRow icon="star-outline" label="Понравилось" onPress={() => router.push('/wishlist')} />
+        <ProfileRow icon="film-outline" label="Yummy" onPress={() => router.push('/yummy')} />
         {user && (
           <>
             <ProfileRow icon="list-outline" label="Мои списки" onPress={() => router.push('/account/lists')} />

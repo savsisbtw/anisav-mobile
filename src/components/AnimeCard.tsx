@@ -36,7 +36,8 @@ export default function AnimeCard({ release, onPress }: AnimeCardProps) {
   const meta = [
     release.year,
     release.type?.description,
-    release.episodes_total != null ? `${release.episodes_total} эп.` : null,
+    release.episodes_total ? `${release.episodes_total} эп.` : null,
+    release.source === 'yummy' ? 'Yummy' : null,
   ]
     .filter(Boolean)
     .join(' · ')

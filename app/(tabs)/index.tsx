@@ -3,6 +3,7 @@ import { Image, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { api, imageUrl } from '../../src/lib/api'
+import { onlyOnYummy, yummyCatalog } from '../../src/lib/yummy'
 import { getContinueWatching, ContinueWatchingItem } from '../../src/lib/continueWatching'
 import type { Release, ScheduleDay } from '../../src/lib/types'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
@@ -19,6 +20,7 @@ export default function HomeScreen() {
   const [recommended, setRecommended] = useState<Release[]>([])
   const [today, setToday] = useState<ScheduleDay[]>([])
   const [continueWatching, setContinueWatching] = useState<ContinueWatchingItem[]>([])
+  const [yummyOnly, setYummyOnly] = useState<Release[]>([])
   const [refreshing, setRefreshing] = useState(false)
 
   const load = useCallback(async () => {
@@ -32,6 +34,10 @@ export default function HomeScreen() {
     setRecommended(recommendedRes)
     setToday(scheduleRes?.today?.filter((s) => s.release) ?? [])
     setContinueWatching(continueRes)
+    yummyCatalog('views', 0, 60)
+      .then((page) => onlyOnYummy(page.items))
+      .then((items) => setYummyOnly(items.slice(0, 14)))
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -100,6 +106,7 @@ export default function HomeScreen() {
       <Row title="Онгоинги сегодня" releases={today.map((s) => s.release)} />
       <Row title="Последние обновления" releases={latest} />
       <Row title="Рекомендуем" releases={recommended} />
+      <Row title="Только на Yummy" releases={yummyOnly} href="/yummy" />
 
       <Footer />
     </ScrollView>

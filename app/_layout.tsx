@@ -60,6 +60,18 @@ export default function RootLayout() {
                 headerShadowVisible: false,
               }}
             />
+            <Stack.Screen
+              name="yummy/[id]"
+              options={{
+                presentation: 'card',
+                headerShown: true,
+                headerTitle: '',
+                headerBackTitle: '',
+                headerStyle: { backgroundColor: colors.background },
+                headerTintColor: colors.text,
+                headerShadowVisible: false,
+              }}
+            />
             <Stack.Screen name="login" options={{ presentation: 'modal' }} />
           </Stack>
         </AuthProvider>

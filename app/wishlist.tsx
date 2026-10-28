@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import type { Release } from '../src/lib/types'
 import { getWishlist, onWishlistChange } from '../src/lib/wishlist'
+import { titleHref } from '../src/lib/links'
 import { colors, font, radius, spacing } from '../src/lib/theme'
 import AnimeCard from '../src/components/AnimeCard'
 import Loader from '../src/components/Loader'
@@ -76,7 +77,7 @@ export default function WishlistScreen() {
             item ? (
               <View style={styles.gridItem}>
                 <Reveal index={index % (numColumns * 3)}>
-                  <AnimeCard release={item} onPress={() => router.push(`/title/${item.alias || item.id}`)} />
+                  <AnimeCard release={item} onPress={() => router.push(titleHref(item))} />
                 </Reveal>
               </View>
             ) : (

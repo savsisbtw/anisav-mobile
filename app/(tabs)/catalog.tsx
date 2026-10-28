@@ -15,6 +15,8 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { api } from '../../src/lib/api'
+import { onlyOnYummy, yummySearch } from '../../src/lib/yummy'
+import { titleHref } from '../../src/lib/links'
 import type { CatalogFilters, Genre, Release, ValueDescription } from '../../src/lib/types'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 import AnimeCard from '../../src/components/AnimeCard'
@@ -130,14 +132,27 @@ export default function CatalogScreen() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [yummyExtra, setYummyExtra] = useState<Release[]>([])
+  const [yummyLoading, setYummyLoading] = useState(false)
 
   useEffect(() => {
     let cancelled = false
     setLoading(true)
     setResults(null)
     setPage(1)
+    setYummyExtra([])
+    setYummyLoading(isSearching)
 
     if (isSearching) {
+      yummySearch(debouncedQuery)
+        .then(onlyOnYummy)
+        .then((extra) => {
+          if (!cancelled) setYummyExtra(extra)
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (!cancelled) setYummyLoading(false)
+        })
       api
         .search(debouncedQuery)
         .then((data) => {
@@ -187,12 +202,19 @@ export default function CatalogScreen() {
       .finally(() => setLoadingMore(false))
   }
 
+  const shown = useMemo(() => {
+    if (!results) return null
+    return isSearching ? [...results, ...yummyExtra] : results
+  }, [results, yummyExtra, isSearching])
+
+  const waiting = loading || (isSearching && yummyLoading && (!shown || shown.length === 0))
+
   const paddedResults = useMemo(() => {
-    if (!results) return []
-    const remainder = results.length % columns
-    if (remainder === 0) return results
-    return [...results, ...Array(columns - remainder).fill(null)]
-  }, [results, columns])
+    if (!shown) return []
+    const remainder = shown.length % columns
+    if (remainder === 0) return shown
+    return [...shown, ...Array(columns - remainder).fill(null)]
+  }, [shown, columns])
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
@@ -231,9 +253,9 @@ export default function CatalogScreen() {
         )}
       </View>
 
-      {loading ? (
+      {waiting ? (
         <GridSkeleton columns={columns} count={columns * 3} />
-      ) : results && results.length === 0 ? (
+      ) : shown && shown.length === 0 ? (
         <View style={styles.emptyWrap}>
           <Ionicons name="file-tray-outline" size={40} color={colors.textFaint} />
           <Text style={styles.emptyText}>Ничего не найдено</Text>
@@ -255,7 +277,7 @@ export default function CatalogScreen() {
             <View style={styles.cardCell}>
               {item && (
                 <Reveal index={index % (columns * 3)}>
-                  <AnimeCard release={item} onPress={() => router.push(`/title/${item.alias || item.id}`)} />
+                  <AnimeCard release={item} onPress={() => router.push(titleHref(item))} />
                 </Reveal>
               )}
             </View>
