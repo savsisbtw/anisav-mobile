@@ -1,9 +1,9 @@
-import { Pressable, StyleSheet, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import type { BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs'
 import * as Haptics from 'expo-haptics'
-import { colors } from '../lib/theme'
+import { colors, font } from '../lib/theme'
 
 const ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   index: 'home',
@@ -42,6 +42,9 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
           >
             {focused && <View style={styles.activeLine} />}
             <Ionicons name={iconName} size={21} color={focused ? colors.text : colors.textFaint} />
+            <Text style={[styles.label, focused && styles.labelOn]} numberOfLines={1}>
+              {typeof options.title === 'string' ? options.title : route.name}
+            </Text>
           </Pressable>
         )
       })}
@@ -62,9 +65,18 @@ const styles = StyleSheet.create({
   },
   tab: {
     flex: 1,
-    height: 52,
+    height: 56,
+    gap: 3,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  label: {
+    color: colors.textFaint,
+    fontFamily: font.medium,
+    fontSize: 10,
+  },
+  labelOn: {
+    color: colors.text,
   },
   activeLine: {
     position: 'absolute',

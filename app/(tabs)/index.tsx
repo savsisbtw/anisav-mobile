@@ -8,6 +8,7 @@ import { getContinueWatching, ContinueWatchingItem } from '../../src/lib/continu
 import type { Release, ScheduleDay } from '../../src/lib/types'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 import Row from '../../src/components/Row'
+import Featured from '../../src/components/Featured'
 import Footer from '../../src/components/Footer'
 import { HomeSkeleton } from '../../src/components/Skeleton'
 import Reveal from '../../src/components/Reveal'
@@ -68,6 +69,8 @@ export default function HomeScreen() {
         <Text style={styles.title}>Главная</Text>
         <Text style={styles.subtitle}>Свежие релизы и то, что ты смотришь</Text>
       </View>
+
+      <Featured releases={latest} />
 
       {continueWatching.length > 0 && (
         <View style={styles.section}>

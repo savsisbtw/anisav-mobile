@@ -13,6 +13,7 @@ import Chip from '../../src/components/Chip'
 import YummyPlayer from '../../src/components/YummyPlayer'
 import AnimatedPressable from '../../src/components/AnimatedPressable'
 import Solid from '../../src/components/Solid'
+import Backdrop from '../../src/components/Backdrop'
 
 function unique(list: string[]) {
   return list.filter((v, i) => list.indexOf(v) === i)
@@ -107,6 +108,7 @@ export default function YummyTitleScreen() {
       contentContainerStyle={{ paddingBottom: insets.bottom + spacing(10) }}
       showsVerticalScrollIndicator={false}
     >
+      <Backdrop uri={poster} height={340} />
       <View style={styles.header}>
         {poster && <Image source={{ uri: poster }} style={styles.poster} resizeMode="cover" />}
         <View style={styles.headerInfo}>

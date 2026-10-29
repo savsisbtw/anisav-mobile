@@ -24,6 +24,7 @@ import Player from '../../src/components/Player'
 import Reveal from '../../src/components/Reveal'
 import AnimatedPressable from '../../src/components/AnimatedPressable'
 import Solid from '../../src/components/Solid'
+import Backdrop from '../../src/components/Backdrop'
 
 const COLLECTION_LABELS: Record<CollectionType, string> = {
   WATCHING: 'Смотрю',
@@ -219,6 +220,7 @@ export default function TitleDetailScreen() {
       contentContainerStyle={{ paddingBottom: insets.bottom + spacing(10) }}
       showsVerticalScrollIndicator={false}
     >
+      <Backdrop uri={poster} height={340} />
       <View style={styles.header}>
         {poster && <Image source={{ uri: poster }} style={styles.poster} resizeMode="cover" />}
         <View style={styles.headerInfo}>
